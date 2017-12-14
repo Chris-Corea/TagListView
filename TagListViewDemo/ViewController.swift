@@ -13,10 +13,11 @@ class ViewController: UIViewController, TagListViewDelegate {
     @IBOutlet weak var tagListView: TagListView!
     @IBOutlet weak var biggerTagListView: TagListView!
     @IBOutlet weak var biggestTagListView: TagListView!
-    
+    @IBOutlet weak var leftImageTagListView: TagListView!
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         tagListView.delegate = self
         tagListView.addTag("TagListView")
         tagListView.addTag("TEAChart")
@@ -35,7 +36,7 @@ class ViewController: UIViewController, TagListViewDelegate {
         }
 
         tagListView.insertTag("This should be the third tag", at: 2)
-        
+
         biggerTagListView.delegate = self
         biggerTagListView.textFont = UIFont.systemFont(ofSize: 15)
         biggerTagListView.shadowRadius = 2
@@ -52,7 +53,15 @@ class ViewController: UIViewController, TagListViewDelegate {
         // it is also possible to add all tags in one go
         biggestTagListView.addTags(["all", "your", "tag", "are", "belong", "to", "us"])
         biggestTagListView.alignment = .right
-        
+
+        leftImageTagListView.leftImage = UIImage(named: "ic_left")
+        leftImageTagListView.selectedLeftImage = UIImage(named: "ic_selected_left")
+        leftImageTagListView.wrapBeforeIndexes = [1, 2, 3]
+        leftImageTagListView.delegate = self
+        leftImageTagListView.addTag("skill1").isSelected = true
+        leftImageTagListView.addTag("skill2")
+        leftImageTagListView.addTag("skill3")
+        leftImageTagListView.addTag("skill4")
     }
     
     override func didReceiveMemoryWarning() {
@@ -61,13 +70,13 @@ class ViewController: UIViewController, TagListViewDelegate {
     }
 
     // MARK: TagListViewDelegate
-    func tagPressed(_ title: String, tagView: TagView, sender: TagListView) {
-        print("Tag pressed: \(title), \(sender)")
+    func tagPressed(_ title: String, index:Int, tagView: TagView, sender: TagListView) {
+        print("Tag pressed: \(title), \(index), \(sender)")
         tagView.isSelected = !tagView.isSelected
     }
     
-    func tagRemoveButtonPressed(_ title: String, tagView: TagView, sender: TagListView) {
-        print("Tag Remove pressed: \(title), \(sender)")
+    func tagRemoveButtonPressed(_ title: String, index:Int, tagView: TagView, sender: TagListView) {
+        print("Tag Remove pressed: \(title), \(index), \(sender)")
         sender.removeTagView(tagView)
     }
 }
