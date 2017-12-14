@@ -197,6 +197,22 @@ open class TagListView: UIView {
         }
     }
     
+    open var leftImage: UIImage? {
+        didSet {
+            for tagView in tagViews {
+                tagView.leftImage = leftImage
+            }
+        }
+    }
+
+    open var selectedLeftImage: UIImage? {
+        didSet {
+            for tagView in tagViews {
+                tagView.selectedLeftImage = selectedLeftImage
+            }
+        }
+    }
+
     @IBOutlet open weak var delegate: TagListViewDelegate?
     
     open private(set) var tagViews: [TagView] = []
@@ -309,6 +325,8 @@ open class TagListView: UIView {
         tagView.paddingX = paddingX
         tagView.paddingY = paddingY
         tagView.textFont = textFont
+        tagView.leftImage = leftImage
+        tagView.selectedLeftImage = selectedLeftImage
         tagView.removeIconLineWidth = removeIconLineWidth
         tagView.removeButtonIconSize = removeButtonIconSize
         tagView.enableRemoveButton = enableRemoveButton

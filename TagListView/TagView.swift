@@ -52,8 +52,8 @@ open class TagView: UIButton {
     }
     @IBInspectable open var paddingX: CGFloat = 5 {
         didSet {
-            titleEdgeInsets.left = paddingX
             updateRightInsets()
+            updateLeftInsets()
         }
     }
 
@@ -81,6 +81,20 @@ open class TagView: UIButton {
         }
     }
     
+    open var leftImage: UIImage? {
+        didSet {
+            reloadStyles()
+            updateLeftInsets()
+        }
+    }
+
+    open var selectedLeftImage: UIImage? {
+        didSet {
+            reloadStyles()
+            updateLeftInsets()
+        }
+    }
+
     var textFont: UIFont = UIFont.systemFont(ofSize: 12) {
         didSet {
             titleLabel?.font = textFont
@@ -99,11 +113,13 @@ open class TagView: UIButton {
             backgroundColor = selectedBackgroundColor ?? tagBackgroundColor
             layer.borderColor = selectedBorderColor?.cgColor ?? borderColor?.cgColor
             setTitleColor(selectedTextColor, for: UIControlState())
+            leftImageView.image = selectedLeftImage
         }
         else {
             backgroundColor = tagBackgroundColor
             layer.borderColor = borderColor?.cgColor
             setTitleColor(textColor, for: UIControlState())
+            leftImageView.image = leftImage
         }
     }
     
@@ -147,6 +163,14 @@ open class TagView: UIButton {
             removeButton.lineColor = removeIconLineColor
         }
     }
+
+    // MARK: left image view
+
+    let leftImageView: UIImageView = {
+        let v = UIImageView()
+        v.contentMode = .center
+        return v
+    }()
     
     /// Handles Tap (TouchUpInside)
     open var onTap: ((TagView) -> Void)?
@@ -172,6 +196,7 @@ open class TagView: UIButton {
 
         frame.size = intrinsicContentSize
         addSubview(removeButton)
+        addSubview(leftImageView)
         removeButton.tagView = self
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(self.longPress))
@@ -194,6 +219,15 @@ open class TagView: UIButton {
         if enableRemoveButton {
             size.width += removeButtonIconSize + paddingX
         }
+        if leftImage != nil || selectedLeftImage != nil {
+            let leftImageSize = imageView!.intrinsicContentSize
+            let imageHeight = leftImageSize.height
+            let imageWidth = leftImageSize.width + paddingX
+            if size.height < imageHeight {
+                size.height = imageHeight
+            }
+            size.width += imageWidth
+        }
         return size
     }
     
@@ -205,6 +239,15 @@ open class TagView: UIButton {
             titleEdgeInsets.right = paddingX
         }
     }
+
+    private func updateLeftInsets() {
+        if leftImage != nil || selectedLeftImage != nil {
+            let iconWidth = imageView?.intrinsicContentSize.width ?? 0
+            titleEdgeInsets.left = paddingX + iconWidth + paddingX
+        } else {
+            titleEdgeInsets.left = paddingX
+        }
+    }
     
     open override func layoutSubviews() {
         super.layoutSubviews()
@@ -213,6 +256,13 @@ open class TagView: UIButton {
             removeButton.frame.origin.x = self.frame.width - removeButton.frame.width
             removeButton.frame.size.height = self.frame.height
             removeButton.frame.origin.y = 0
+        }
+        if leftImage != nil || selectedLeftImage != nil {
+            let iconWidth = imageView?.intrinsicContentSize.width ?? 0
+            leftImageView.frame.size.width = paddingX + iconWidth + paddingX
+            leftImageView.frame.origin.x = 0
+            leftImageView.frame.size.height = self.frame.height
+            leftImageView.frame.origin.y = 0
         }
     }
 }
