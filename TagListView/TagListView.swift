@@ -9,8 +9,8 @@
 import UIKit
 
 @objc public protocol TagListViewDelegate {
-    @objc optional func tagPressed(_ title: String, tagView: TagView, sender: TagListView) -> Void
-    @objc optional func tagRemoveButtonPressed(_ title: String, tagView: TagView, sender: TagListView) -> Void
+    @objc optional func tagPressed(_ title: String, index: Int ,tagView: TagView, sender: TagListView) -> Void
+    @objc optional func tagRemoveButtonPressed(_ title: String, index: Int, tagView: TagView, sender: TagListView) -> Void
 }
 
 @IBDesignable
@@ -432,13 +432,25 @@ open class TagListView: UIView {
     // MARK: - Events
     
     @objc func tagPressed(_ sender: TagView!) {
+        var index: Int!
+        for (i, tagView) in tagViews.enumerated() {
+            if tagView == sender {
+                index = i
+            }
+        }
         sender.onTap?(sender)
-        delegate?.tagPressed?(sender.currentTitle ?? "", tagView: sender, sender: self)
+        delegate?.tagPressed?(sender.currentTitle ?? "", index: index, tagView: sender, sender: self)
     }
     
     @objc func removeButtonPressed(_ closeButton: CloseButton!) {
         if let tagView = closeButton.tagView {
-            delegate?.tagRemoveButtonPressed?(tagView.currentTitle ?? "", tagView: tagView, sender: self)
+            var index: Int!
+            for (i, v) in tagViews.enumerated() {
+                if v == tagView {
+                    index = i
+                }
+            }
+            delegate?.tagRemoveButtonPressed?(tagView.currentTitle ?? "", index: index, tagView: tagView, sender: self)
         }
     }
 }
