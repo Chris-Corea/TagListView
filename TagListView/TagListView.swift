@@ -213,6 +213,12 @@ open class TagListView: UIView {
         }
     }
 
+    open var wrapBeforeIndexes: [Int] = [Int]() {
+        didSet {
+            rearrangeViews()
+        }
+    }
+    
     @IBOutlet open weak var delegate: TagListViewDelegate?
     
     open private(set) var tagViews: [TagView] = []
@@ -255,8 +261,8 @@ open class TagListView: UIView {
         for (index, tagView) in tagViews.enumerated() {
             tagView.frame.size = tagView.intrinsicContentSize
             tagViewHeight = tagView.frame.height
-            
-            if currentRowTagCount == 0 || currentRowWidth + tagView.frame.width > frame.width {
+
+            if currentRowTagCount == 0 || currentRowWidth + tagView.frame.width > frame.width || wrapBeforeIndexes.contains(index) {
                 currentRow += 1
                 currentRowWidth = 0
                 currentRowTagCount = 0
