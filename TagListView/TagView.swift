@@ -9,7 +9,7 @@
 import UIKit
 
 @IBDesignable
-open class TagView: UIButton {
+open class TagView: TouchEffectButton {
 
     @IBInspectable open var cornerRadius: CGFloat = 0 {
         didSet {
